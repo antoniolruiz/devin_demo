@@ -38,6 +38,50 @@ DASHBOARD_HTML = """
             --red: #ef4444;
             --yellow: #eab308;
             --orange: #f97316;
+            --row-dropped-bg: #1c0a0a;
+            --row-dropped-text: #fca5a5;
+            --row-modified-bg: #0c1a2e;
+            --legend-dropped-bg: #450a0a;
+            --legend-modified-bg: #0c1a2e;
+            --badge-blue-bg: #1e3a5f;
+            --badge-green-bg: #14532d;
+            --badge-red-bg: #450a0a;
+            --badge-yellow-bg: #422006;
+            --badge-orange-bg: #431407;
+            --icon-drop-bg: #450a0a;
+            --icon-fix-bg: #14532d;
+            --icon-dedup-bg: #422006;
+            --icon-add-bg: #1e3a5f;
+            --icon-warn-bg: #431407;
+        }
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --surface-hover: #f1f5f9;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --green: #16a34a;
+            --red: #dc2626;
+            --yellow: #ca8a04;
+            --orange: #ea580c;
+            --row-dropped-bg: #fef2f2;
+            --row-dropped-text: #991b1b;
+            --row-modified-bg: #eff6ff;
+            --legend-dropped-bg: #fecaca;
+            --legend-modified-bg: #bfdbfe;
+            --badge-blue-bg: #dbeafe;
+            --badge-green-bg: #dcfce7;
+            --badge-red-bg: #fee2e2;
+            --badge-yellow-bg: #fef9c3;
+            --badge-orange-bg: #ffedd5;
+            --icon-drop-bg: #fee2e2;
+            --icon-fix-bg: #dcfce7;
+            --icon-dedup-bg: #fef9c3;
+            --icon-add-bg: #dbeafe;
+            --icon-warn-bg: #ffedd5;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -118,11 +162,11 @@ DASHBOARD_HTML = """
             font-size: 0.75rem;
             font-weight: 500;
         }
-        .badge-blue { background: #1e3a5f; color: var(--accent-light); }
-        .badge-green { background: #14532d; color: var(--green); }
-        .badge-red { background: #450a0a; color: var(--red); }
-        .badge-yellow { background: #422006; color: var(--yellow); }
-        .badge-orange { background: #431407; color: var(--orange); }
+        .badge-blue { background: var(--badge-blue-bg); color: var(--accent-light); }
+        .badge-green { background: var(--badge-green-bg); color: var(--green); }
+        .badge-red { background: var(--badge-red-bg); color: var(--red); }
+        .badge-yellow { background: var(--badge-yellow-bg); color: var(--yellow); }
+        .badge-orange { background: var(--badge-orange-bg); color: var(--orange); }
 
         .changelog {
             display: grid;
@@ -148,11 +192,11 @@ DASHBOARD_HTML = """
             flex-shrink: 0;
             margin-top: 0.1rem;
         }
-        .change-icon.drop { background: #450a0a; color: var(--red); }
-        .change-icon.fix { background: #14532d; color: var(--green); }
-        .change-icon.dedup { background: #422006; color: var(--yellow); }
-        .change-icon.add { background: #1e3a5f; color: var(--accent-light); }
-        .change-icon.warn { background: #431407; color: var(--orange); }
+        .change-icon.drop { background: var(--icon-drop-bg); color: var(--red); }
+        .change-icon.fix { background: var(--icon-fix-bg); color: var(--green); }
+        .change-icon.dedup { background: var(--icon-dedup-bg); color: var(--yellow); }
+        .change-icon.add { background: var(--icon-add-bg); color: var(--accent-light); }
+        .change-icon.warn { background: var(--icon-warn-bg); color: var(--orange); }
         .change-body h4 {
             font-size: 0.95rem;
             font-weight: 600;
@@ -232,12 +276,12 @@ DASHBOARD_HTML = """
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: var(--surface-hover); }
         tr.row-dropped td {
-            background: #1c0a0a;
-            color: #fca5a5;
+            background: var(--row-dropped-bg);
+            color: var(--row-dropped-text);
             text-decoration: line-through;
             opacity: 0.7;
         }
-        tr.row-modified td { background: #0c1a2e; }
+        tr.row-modified td { background: var(--row-modified-bg); }
         tr.row-modified td.cell-changed {
             color: var(--accent-light);
             font-weight: 600;
@@ -260,8 +304,11 @@ DASHBOARD_HTML = """
             height: 12px;
             border-radius: 3px;
         }
-        .legend-dot.dropped { background: #450a0a; border: 1px solid var(--red); }
-        .legend-dot.modified { background: #0c1a2e; border: 1px solid var(--accent); }
+        .legend-dot.dropped { background: var(--legend-dropped-bg); border: 1px solid var(--red); }
+        .legend-dot.modified {
+            background: var(--legend-modified-bg);
+            border: 1px solid var(--accent);
+        }
         .legend-dot.unchanged { background: var(--surface); border: 1px solid var(--border); }
 
         .category-grid {
@@ -289,12 +336,43 @@ DASHBOARD_HTML = """
             color: var(--text);
             font-weight: 600;
         }
+        .theme-toggle {
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover {
+            background: var(--border);
+        }
+        .header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>ETL Pipeline Dashboard</h1>
-        <p>Before &amp; after view of data processing &mdash; showing what changed and why</p>
+        <div class="header-row">
+            <div>
+                <h1>ETL Pipeline Dashboard</h1>
+                <p>Before &amp; after view of data processing &mdash;
+                showing what changed and why</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+                <span id="theme-icon">&#9788;</span>
+                <span id="theme-label">Light Mode</span>
+            </button>
+        </div>
     </div>
 
     <div class="container">
@@ -485,6 +563,35 @@ DASHBOARD_HTML = """
             document.getElementById('tab-' + name).classList.add('active');
             event.target.closest('.tab').classList.add('active');
         }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('etl-dashboard-theme', next);
+            updateToggleButton(next);
+        }
+
+        function updateToggleButton(theme) {
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+            if (theme === 'light') {
+                icon.innerHTML = '&#9789;';
+                label.textContent = 'Dark Mode';
+            } else {
+                icon.innerHTML = '&#9788;';
+                label.textContent = 'Light Mode';
+            }
+        }
+
+        (function() {
+            const saved = localStorage.getItem('etl-dashboard-theme');
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+                updateToggleButton(saved);
+            }
+        })();
     </script>
 </body>
 </html>
