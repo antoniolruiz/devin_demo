@@ -123,6 +123,25 @@ etl-pipeline -v
 etl-pipeline -c data/config.example.yaml
 ```
 
+### Dashboard
+
+The pipeline includes a web dashboard to visualize data before and after processing.
+
+```bash
+# Launch the dashboard (opens at http://localhost:5050)
+etl-pipeline --dashboard
+```
+
+The dashboard has 3 tabs:
+
+- **Overview** — Summary stats, transformation changelog, and category breakdown
+- **Data Comparison** — Raw input, processed output, and row-level diff with color-coded changes
+- **Charts** — 5 visualizations: spending by category, row status distribution, category row counts, transformation impact, and amount distribution
+
+Features: dark/light mode toggle (persists in browser), theme-aware charts, responsive layout.
+
+To share the dashboard with your team, run it on a shared server and share the URL (e.g. `http://your-server:5050`). You can change the port with `etl-pipeline --dashboard --port 8080`.
+
 ### Running Tests
 
 ```bash
@@ -176,6 +195,8 @@ These issues are labeled by category (`bug`, `feature`, `docs`, `refactor`, `tes
 - **pandas** — Data manipulation and transformation
 - **Click** — CLI framework
 - **PyYAML** — Configuration file parsing
+- **Flask** — Dashboard web server
+- **Chart.js** — Interactive charts (loaded via CDN)
 - **pytest** — Testing framework
 - **ruff** — Linting and code quality
 - **GitHub Actions** — Continuous integration
