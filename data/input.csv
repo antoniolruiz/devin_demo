@@ -1,16 +1,51 @@
-id,date,amount,category,description
-1,2024-01-15,250.00,Food,Grocery shopping
-2,2024-01-16,45.50,Transport,Bus fare
-3,2024-01-17,,Utilities,Electric bill
-4,2024-01-18,1200.00,Food,Restaurant dinner
-5,2024-01-19,89.99,Transport,Gas
-6,2024-01-20,34.00,Utilities,Water bill
-7,2024-01-15,250.00,Food,Grocery shopping
-8,01/22/2024,150.00,Entertainment,Movie tickets
-9,2024-01-23,500.00, Food ,Bulk groceries
-10,2024-01-24,75.00,TRANSPORT,Taxi
-11,invalid-date,60.00,Utilities,Phone bill
-12,2024-01-26,0.00,Food,Free sample
-13,2024-01-27,999.99,Entertainment,Concert
-14,2024-01-28,1500.00,Transport,Car repair
-15,2024-01-29,200.00,Food,Weekly groceries
+id,date,amount,category,description,tags
+1,2024-01-02,87.50,Food,Weekly grocery run at FreshMart,groceries;weekly
+2,2024-01-03,42.00,Transport,Uber ride to airport,travel;rideshare
+3,2024-01-04,150.00,Utilities,January electricity bill,monthly;essential
+4,2024-01-05,23.99,Food,Lunch at downtown cafe,dining;lunch
+5,2024-01-06,1200.00,Housing,Monthly rent payment,rent;monthly
+6,2024-01-07,65.00,Entertainment,Movie tickets for family,movies;weekend
+7,2024-01-08,340.00,Healthcare,Dental cleaning and checkup,dental;insurance
+8,2024-01-09,,Utilities,Water bill — amount pending,monthly;pending
+9,2024-01-10,15.00,Food,Coffee beans from roaster,coffee;weekly
+10,2024-01-11,200.00,Transport,Monthly transit pass,transit;monthly
+11,2024-01-12,55.00,Entertainment,Streaming subscriptions,streaming;monthly
+12,2024-01-13,430.00,Food,Bulk Costco grocery haul,groceries;bulk
+13,2024-01-14,78.00,Utilities,Internet service — January,internet;monthly
+14,2024-01-15,250.00,Food,Grocery shopping at Whole Foods,groceries;weekly
+15,2024-01-16,45.50,Transport,Bus fare — weekly commute,commute;weekly
+16,2024-01-17,,Utilities,Gas bill — amount missing,monthly;pending
+17,2024-01-18,1200.00, Food ,Restaurant dinner — client meeting,dining;business
+18,2024-01-19,89.99,Transport,Gas station fill-up,fuel;car
+19,2024-01-20,34.00,Utilities,Water bill — February,monthly;essential
+20,2024-01-15,250.00,Food,Grocery shopping at Whole Foods,groceries;weekly
+21,01/22/2024,150.00,Entertainment,Concert tickets — live music night,events;weekend
+22,2024-01-23,500.00, Food ,Bulk groceries for meal prep,groceries;mealprep
+23,2024-01-24,75.00,TRANSPORT,Taxi to doctor appointment,medical;rideshare
+24,invalid-date,60.00,Utilities,Phone bill — carrier plan,phone;monthly
+25,2024-01-26,0.00,Food,Free sample at farmers market,free;samples
+26,2024-01-27,999.99,Entertainment,VIP concert package,events;premium
+27,2024-01-28,1500.00,Transport,Car repair — brake replacement,car;repair
+28,2024-01-29,200.00,Food,Weekly groceries — family of 4,groceries;weekly
+29,2024-01-30,120.00,Healthcare,Prescription medication refill,pharmacy;monthly
+30,2024-01-31,85.00,Utilities,Cell phone plan — January,phone;monthly
+31,2024-02-01,310.00,Food,Monthly Costco trip,groceries;bulk
+32,2024-02-02,1200.00,Housing,February rent payment,rent;monthly
+33,2024-02-03,47.50,Entertainment,Board game cafe night,social;weekend
+34,2024-02-04,62.00,Transport,Uber rides — 3 trips,rideshare;commute
+35,2024-02-05,28.00,Food,Takeout Thai dinner,dining;takeout
+36,2024-02-06,175.00,Healthcare,Eye exam and contact lenses,vision;insurance
+37,2024-02-07,,Food,Grocery delivery — amount pending,groceries;pending
+38,02/08/2024,95.00,Utilities,Heating oil delivery,heating;winter
+39,2024-02-09,550.00,Transport,Flight ticket — business trip,travel;flight
+40,2024-02-10,40.00,Entertainment,Museum admission — family,culture;weekend
+41,2024-02-11,112.00, Food ,Valentine dinner prep groceries,groceries;special
+42,2024-02-12,88.00,Utilities,Electric bill — February,monthly;essential
+43,2024-02-13,350.00,Entertainment,Valentine's dinner for two,dining;special
+44,2024-02-14,25.00,Food,Flowers and chocolates,gifts;valentine
+45,2024-02-15,1200.00,Housing,Renter's insurance — annual,insurance;annual
+46,2024/02/16,200.00,Transport,Car insurance — monthly,insurance;car
+47,2024-02-17,67.00,Healthcare,Flu shot and checkup,medical;preventive
+48,2024-02-18,430.00,Food,Bi-weekly grocery restock,groceries;biweekly
+49,2024-02-19,33.00,Utilities,Trash collection service,waste;monthly
+50,2024-02-20,160.00,Entertainment,Ski day pass — family,sports;winter
