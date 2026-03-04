@@ -541,9 +541,21 @@ def _compute_diff(raw_df, processed_df):
     return diff_rows, diff_columns
 
 
-def _build_changelog(raw_df, processed_df, dedup_columns=None):
-    """Build a list of human-readable transformation changes."""
+def _build_changelog(raw_df, processed_df, dedup_columns=None, cleaned_df=None):
+    """Build a list of human-readable transformation changes.
+
+    Args:
+        raw_df: The original raw input DataFrame.
+        processed_df: The final processed DataFrame.
+        dedup_columns: Columns used for deduplication.
+        cleaned_df: DataFrame after clean_amounts (rows with NaN amounts removed).
+            Used for accurate category/date/dedup stats since those transforms
+            run after clean_amounts. Falls back to raw_df if not provided.
+    """
     changelog = []
+    # Use cleaned_df (post-clean_amounts) for stats on transforms that run
+    # after clean_amounts, so we don't overcount rows that were already dropped.
+    post_clean = cleaned_df if cleaned_df is not None else raw_df
 
     nan_amount_ids = raw_df[raw_df["amount"].isna()]["id"].tolist()
     if nan_amount_ids:
@@ -559,8 +571,8 @@ def _build_changelog(raw_df, processed_df, dedup_columns=None):
         )
 
     dedup_cols = dedup_columns if dedup_columns else ["id"]
-    dup_mask = raw_df.duplicated(subset=dedup_cols, keep="first")
-    dup_ids = raw_df[dup_mask]["id"].tolist()
+    dup_mask = post_clean.duplicated(subset=dedup_cols, keep="first")
+    dup_ids = post_clean[dup_mask]["id"].tolist()
     if dup_ids:
         changelog.append(
             {
@@ -573,9 +585,9 @@ def _build_changelog(raw_df, processed_df, dedup_columns=None):
             }
         )
 
-    if "category" in raw_df.columns:
-        changed_cats = raw_df[
-            raw_df["category"].str.strip() != raw_df["category"].str.lower().str.strip()
+    if "category" in post_clean.columns:
+        changed_cats = post_clean[
+            post_clean["category"].str.strip() != post_clean["category"].str.lower().str.strip()
         ]
         if len(changed_cats) > 0:
             changelog.append(
@@ -591,9 +603,9 @@ def _build_changelog(raw_df, processed_df, dedup_columns=None):
                 }
             )
 
-    if "date" in raw_df.columns:
+    if "date" in post_clean.columns:
         std_format = r"^\d{4}-\d{2}-\d{2}$"
-        non_standard = raw_df[~raw_df["date"].astype(str).str.match(std_format)]
+        non_standard = post_clean[~post_clean["date"].astype(str).str.match(std_format)]
         if len(non_standard) > 0:
             changelog.append(
                 {
@@ -702,20 +714,23 @@ def run_dashboard(config=None, host="127.0.0.1", port=5050):
         processed_df["is_high_value"] = None
 
     dedup_cols = config.get("dedup_columns", ["id"])
-    dup_count = int(raw_df.duplicated(subset=dedup_cols, keep="first").sum())
+    dup_count = int(df_after_clean.duplicated(subset=dedup_cols, keep="first").sum())
 
     cat_changed = 0
-    if "category" in raw_df.columns:
+    if "category" in df_after_clean.columns:
         cat_changed = int(
             (
-                raw_df["category"].str.strip() != raw_df["category"].str.lower().str.strip()
+                df_after_clean["category"].str.strip()
+                != df_after_clean["category"].str.lower().str.strip()
             ).sum()
         )
 
     dates_fixed = 0
-    if "date" in raw_df.columns:
+    if "date" in df_after_clean.columns:
         std_format = r"^\d{4}-\d{2}-\d{2}$"
-        dates_fixed = int((~raw_df["date"].astype(str).str.match(std_format)).sum())
+        dates_fixed = int(
+            (~df_after_clean["date"].astype(str).str.match(std_format)).sum()
+        )
 
     rows_dropped = len(raw_df) - len(processed_df)
     drop_pct = round(rows_dropped / len(raw_df) * 100, 1) if len(raw_df) > 0 else 0
@@ -741,7 +756,9 @@ def run_dashboard(config=None, host="127.0.0.1", port=5050):
         "total_changes": total_changes,
     }
 
-    changelog = _build_changelog(raw_df, processed_df, dedup_columns=dedup_cols)
+    changelog = _build_changelog(
+        raw_df, processed_df, dedup_columns=dedup_cols, cleaned_df=df_after_clean
+    )
 
     categories = []
     if "category" in processed_df.columns and "amount" in processed_df.columns:
