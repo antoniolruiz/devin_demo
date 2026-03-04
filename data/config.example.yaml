@@ -1,0 +1,33 @@
+# Example pipeline configuration
+# Copy this file to config.yaml and adjust as needed.
+
+# Input/output file paths
+input_path: "data/input.csv"
+output_path: "data/output.csv"
+
+# Logging level (DEBUG, INFO, WARNING, ERROR)
+log_level: "INFO"
+
+# Number of rows to process per batch (for future streaming support)
+batch_size: 1000
+
+# Expected date format in the input data
+date_format: "%Y-%m-%d"
+
+# Column definitions
+columns:
+  required:
+    - id
+    - date
+    - amount
+    - category
+  optional:
+    - description
+    - tags
+
+# Columns used for deduplication
+dedup_columns:
+  - id
+
+# Maximum retries for transient failures
+max_retries: 3
