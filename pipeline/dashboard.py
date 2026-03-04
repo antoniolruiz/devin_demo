@@ -502,9 +502,30 @@ def _compute_diff(raw_df, processed_df):
     diff_rows = []
     shared_cols = ["date", "amount", "category", "description"]
     diff_columns = [c for c in shared_cols if c in raw_df.columns]
+    seen_ids = set()
 
     for _, raw_row in raw_df.iterrows():
         row_id = raw_row["id"]
+
+        # Handle duplicate raw rows (second+ occurrence of same ID)
+        if row_id in seen_ids:
+            values = {}
+            for col in diff_columns:
+                val = raw_row.get(col, "")
+                values[col] = str(val) if pd.notna(val) else ""
+            diff_rows.append(
+                {
+                    "id": row_id,
+                    "status": "Dropped",
+                    "status_badge": "badge-red",
+                    "row_class": "row-dropped",
+                    "values": values,
+                    "changed_cols": [],
+                    "change_summary": "Removed as duplicate",
+                }
+            )
+            continue
+        seen_ids.add(row_id)
 
         if row_id in dropped_ids:
             values = {}
@@ -570,13 +591,11 @@ def _compute_diff(raw_df, processed_df):
                         "change_summary": "",
                     }
                 )
-            # Remove from kept_ids so duplicates don't appear twice
-            kept_ids.discard(row_id)
 
     return diff_rows, diff_columns
 
 
-def _build_changelog(raw_df, processed_df):
+def _build_changelog(raw_df, processed_df, dedup_columns=None):
     """Build a list of human-readable transformation changes."""
     changelog = []
 
@@ -595,7 +614,8 @@ def _build_changelog(raw_df, processed_df):
         )
 
     # 2. Duplicates removed
-    dup_mask = raw_df.duplicated(subset=["id"], keep="first")
+    dedup_cols = dedup_columns if dedup_columns else ["id"]
+    dup_mask = raw_df.duplicated(subset=dedup_cols, keep="first")
     dup_ids = raw_df[dup_mask]["id"].tolist()
     if dup_ids:
         changelog.append(
@@ -695,7 +715,8 @@ def run_dashboard(config=None, host="127.0.0.1", port=5050):
         processed_df["is_high_value"] = None
 
     # Compute stats
-    dup_count = int(raw_df.duplicated(subset=["id"], keep="first").sum())
+    dedup_cols = config.get("dedup_columns", ["id"])
+    dup_count = int(raw_df.duplicated(subset=dedup_cols, keep="first").sum())
 
     cat_changed = 0
     if "category" in raw_df.columns:
@@ -727,7 +748,7 @@ def run_dashboard(config=None, host="127.0.0.1", port=5050):
         "total_changes": total_changes,
     }
 
-    changelog = _build_changelog(raw_df, processed_df)
+    changelog = _build_changelog(raw_df, processed_df, dedup_columns=dedup_cols)
 
     # Category breakdown
     categories = []
