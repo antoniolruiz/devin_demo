@@ -1,0 +1,16 @@
+id,date,amount,category,description
+1,2024-01-15,250.00,Food,Grocery shopping
+2,2024-01-16,45.50,Transport,Bus fare
+3,2024-01-17,,Utilities,Electric bill
+4,2024-01-18,1200.00,Food,Restaurant dinner
+5,2024-01-19,89.99,Transport,Gas
+6,2024-01-20,34.00,Utilities,Water bill
+7,2024-01-15,250.00,Food,Grocery shopping
+8,01/22/2024,150.00,Entertainment,Movie tickets
+9,2024-01-23,500.00, Food ,Bulk groceries
+10,2024-01-24,75.00,TRANSPORT,Taxi
+11,invalid-date,60.00,Utilities,Phone bill
+12,2024-01-26,0.00,Food,Free sample
+13,2024-01-27,999.99,Entertainment,Concert
+14,2024-01-28,1500.00,Transport,Car repair
+15,2024-01-29,200.00,Food,Weekly groceries
