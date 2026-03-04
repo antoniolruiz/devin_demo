@@ -841,7 +841,14 @@ def run_dashboard(config=None, host="127.0.0.1", port=5050):
     rows_dropped = len(raw_df) - len(processed_df)
     drop_pct = round(rows_dropped / len(raw_df) * 100, 1) if len(raw_df) > 0 else 0
 
-    diff_data, diff_columns = _compute_diff(raw_df, processed_df)
+    # Normalize dates to strings before diff comparison so that
+    # "2024-01-02" vs Timestamp("2024-01-02 00:00:00") aren't flagged
+    diff_processed = processed_df.copy()
+    if "date" in diff_processed.columns:
+        diff_processed["date"] = (
+            diff_processed["date"].dt.strftime("%Y-%m-%d").fillna("")
+        )
+    diff_data, diff_columns = _compute_diff(raw_df, diff_processed)
     total_changes = sum(1 for d in diff_data if d["status"] != "Unchanged")
 
     stats = {
