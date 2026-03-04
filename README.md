@@ -41,7 +41,7 @@ The included `data/input.csv` contains **50 realistic transaction records** span
 | Data Quality Issue | Example | Where It Appears |
 |---|---|---|
 | Missing amounts | `amount` is blank | Rows 8, 16, 37 |
-| Duplicate entries | Same `id`, date, and amount | Row 20 duplicates row 14 |
+| Duplicate entries | Same date, amount, and description but different `id` — not caught by default dedup config | Row 20 duplicates row 14 |
 | Inconsistent date formats | `01/22/2024`, `2024/02/16` mixed with `2024-01-02` | Rows 21, 38, 46 |
 | Unparseable dates | `invalid-date` instead of a real date | Row 24 |
 | Inconsistent categories | `" Food "`, `TRANSPORT` instead of `food`, `transport` | Rows 17, 22, 23, 41 |
@@ -123,6 +123,25 @@ etl-pipeline -v
 etl-pipeline -c data/config.example.yaml
 ```
 
+### Dashboard
+
+The pipeline includes a web dashboard to visualize data before and after processing.
+
+```bash
+# Launch the dashboard (opens at http://localhost:5050)
+etl-pipeline --dashboard
+```
+
+The dashboard has 3 tabs:
+
+- **Overview** — Summary stats, transformation changelog, and category breakdown
+- **Data Comparison** — Raw input, processed output, and row-level diff with color-coded changes
+- **Charts** — 5 visualizations: spending by category, row status distribution, category row counts, transformation impact, and amount distribution
+
+Features: dark/light mode toggle (persists in browser), theme-aware charts, responsive layout.
+
+To share the dashboard with your team, run it on a shared server and share the URL (e.g. `http://your-server:5050`). You can change the port with `etl-pipeline --dashboard --port 8080`.
+
 ### Running Tests
 
 ```bash
@@ -176,6 +195,8 @@ These issues are labeled by category (`bug`, `feature`, `docs`, `refactor`, `tes
 - **pandas** — Data manipulation and transformation
 - **Click** — CLI framework
 - **PyYAML** — Configuration file parsing
+- **Flask** — Dashboard web server
+- **Chart.js** — Interactive charts (loaded via CDN)
 - **pytest** — Testing framework
 - **ruff** — Linting and code quality
 - **GitHub Actions** — Continuous integration

@@ -19,12 +19,14 @@ logger = logging.getLogger(__name__)
 @click.option("--input", "-i", "input_path", default=None, help="Input CSV file path")
 @click.option("--output", "-o", "output_path", default=None, help="Output CSV file path")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose logging")
-def main(config, input_path, output_path, verbose):
+@click.option(
+    "--dashboard", is_flag=True, help="Launch the web dashboard instead of running the pipeline"
+)
+@click.option("--port", default=5050, help="Port for the dashboard server (default: 5050)")
+def main(config, input_path, output_path, verbose, dashboard, port):
     """Run the ETL pipeline."""
     log_level = "DEBUG" if verbose else "INFO"
     setup_logging(log_level)
-
-    logger.info("Starting ETL pipeline")
 
     try:
         cfg = load_config(config)
@@ -33,6 +35,15 @@ def main(config, input_path, output_path, verbose):
             cfg["input_path"] = input_path
         if output_path:
             cfg["output_path"] = output_path
+
+        if dashboard:
+            from pipeline.dashboard import run_dashboard
+
+            click.echo("Launching ETL Pipeline Dashboard...")
+            run_dashboard(config=cfg, port=port)
+            return
+
+        logger.info("Starting ETL pipeline")
 
         # Extract
         logger.info("Step 1: Extract")
