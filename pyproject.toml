@@ -22,6 +22,9 @@ dev = [
     "pytest-cov>=4.0.0",
     "ruff>=0.1.0",
 ]
+parquet = [
+    "pyarrow>=14.0.0",
+]
 
 [project.scripts]
 etl-pipeline = "pipeline.cli:main"

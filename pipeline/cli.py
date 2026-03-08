@@ -23,7 +23,13 @@ logger = logging.getLogger(__name__)
     "--dashboard", is_flag=True, help="Launch the web dashboard instead of running the pipeline"
 )
 @click.option("--port", default=5050, help="Port for the dashboard server (default: 5050)")
-def main(config, input_path, output_path, verbose, dashboard, port):
+@click.option(
+    "--output-format",
+    type=click.Choice(["csv", "json", "parquet"], case_sensitive=False),
+    default=None,
+    help="Output file format (default: csv)",
+)
+def main(config, input_path, output_path, verbose, dashboard, port, output_format):
     """Run the ETL pipeline."""
     log_level = "DEBUG" if verbose else "INFO"
     setup_logging(log_level)
@@ -35,6 +41,8 @@ def main(config, input_path, output_path, verbose, dashboard, port):
             cfg["input_path"] = input_path
         if output_path:
             cfg["output_path"] = output_path
+        if output_format:
+            cfg["output_format"] = output_format
 
         if dashboard:
             from pipeline.dashboard import run_dashboard

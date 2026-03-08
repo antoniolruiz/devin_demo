@@ -15,8 +15,23 @@ def write_csv(df, filepath):
 
 
 def write_json(df, filepath):
+    """Write DataFrame as newline-delimited JSON (JSON Lines)."""
     os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
-    df.to_json(filepath, orient="records", indent=2)
+    df.to_json(filepath, orient="records", lines=True)
+    logger.info(f"Wrote {len(df)} rows to {filepath}")
+
+
+def write_parquet(df, filepath):
+    """Write DataFrame to a Parquet file. Requires pyarrow."""
+    try:
+        import pyarrow  # noqa: F401
+    except ImportError:
+        raise ImportError(
+            "pyarrow is required for Parquet output. "
+            "Install it with: pip install 'devin-etl-pipeline[parquet]'"
+        )
+    os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
+    df.to_parquet(filepath, index=False, engine="pyarrow")
     logger.info(f"Wrote {len(df)} rows to {filepath}")
 
 
@@ -52,7 +67,19 @@ def load(df, config=None):
         config = load_config()
 
     output_path = config["output_path"]
-    write_csv(df, output_path)
+    output_format = config.get("output_format", "csv")
+
+    # Adjust file extension to match the chosen format
+    base, _ = os.path.splitext(output_path)
+    ext_map = {"csv": ".csv", "json": ".json", "parquet": ".parquet"}
+    output_path = base + ext_map.get(output_format, ".csv")
+
+    if output_format == "json":
+        write_json(df, output_path)
+    elif output_format == "parquet":
+        write_parquet(df, output_path)
+    else:
+        write_csv(df, output_path)
 
     summary = generate_summary(df)
     logger.info(f"Pipeline summary: {summary}")
