@@ -67,7 +67,7 @@ def load(df, config=None):
         config = load_config()
 
     output_path = config["output_path"]
-    output_format = config.get("output_format", "csv")
+    output_format = config.get("output_format", "csv").lower()
 
     # Adjust file extension to match the chosen format
     base, _ = os.path.splitext(output_path)
