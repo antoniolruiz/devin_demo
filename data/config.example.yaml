@@ -29,5 +29,9 @@ columns:
 dedup_columns:
   - id
 
+# Output format: csv (default), json, or parquet
+# Parquet requires pyarrow: pip install 'devin-etl-pipeline[parquet]'
+output_format: "csv"
+
 # Maximum retries for transient failures
 max_retries: 3

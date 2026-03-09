@@ -18,6 +18,7 @@ DEFAULT_CONFIG = {
     },
     "dedup_columns": ["id"],
     "max_retries": 3,
+    "output_format": "csv",
 }
 
 

@@ -27,7 +27,7 @@ def write_csv(df: pd.DataFrame, filepath: str | os.PathLike[str]) -> None:
 
 
 def write_json(df: pd.DataFrame, filepath: str | os.PathLike[str]) -> None:
-    """Write a DataFrame to a JSON file using a records orientation.
+    """Write a DataFrame as newline-delimited JSON (JSON Lines).
 
     Creates parent directories if they do not already exist.
 
@@ -36,7 +36,31 @@ def write_json(df: pd.DataFrame, filepath: str | os.PathLike[str]) -> None:
         filepath: Destination file path for the JSON output.
     """
     os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
-    df.to_json(filepath, orient="records", indent=2)
+    df.to_json(filepath, orient="records", lines=True)
+    logger.info(f"Wrote {len(df)} rows to {filepath}")
+
+
+def write_parquet(df: pd.DataFrame, filepath: str | os.PathLike[str]) -> None:
+    """Write a DataFrame to a Parquet file.
+
+    Requires the ``pyarrow`` package to be installed.
+
+    Args:
+        df: The DataFrame to write.
+        filepath: Destination file path for the Parquet output.
+
+    Raises:
+        ImportError: If ``pyarrow`` is not installed.
+    """
+    try:
+        import pyarrow  # type: ignore[import-not-found]  # noqa: F401
+    except ImportError:
+        raise ImportError(
+            "pyarrow is required for Parquet output. "
+            "Install it with: pip install 'devin-etl-pipeline[parquet]'"
+        )
+    os.makedirs(os.path.dirname(filepath) or ".", exist_ok=True)
+    df.to_parquet(filepath, index=False, engine="pyarrow")
     logger.info(f"Wrote {len(df)} rows to {filepath}")
 
 
@@ -99,7 +123,19 @@ def load(
         config = load_config()  # type: ignore[no-untyped-call]
 
     output_path: str = config["output_path"]
-    write_csv(df, output_path)
+    output_format: str = config.get("output_format", "csv").lower()
+
+    # Adjust file extension to match the chosen format
+    base, _ = os.path.splitext(output_path)
+    ext_map = {"csv": ".csv", "json": ".json", "parquet": ".parquet"}
+    output_path = base + ext_map.get(output_format, ".csv")
+
+    if output_format == "json":
+        write_json(df, output_path)
+    elif output_format == "parquet":
+        write_parquet(df, output_path)
+    else:
+        write_csv(df, output_path)
 
     summary = generate_summary(df)
     logger.info(f"Pipeline summary: {summary}")

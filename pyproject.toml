@@ -24,6 +24,9 @@ dev = [
     "mypy>=1.0.0",
     "pandas-stubs>=2.0.0",
 ]
+parquet = [
+    "pyarrow>=14.0.0",
+]
 
 [project.scripts]
 etl-pipeline = "pipeline.cli:main"
