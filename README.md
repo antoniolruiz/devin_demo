@@ -121,6 +121,13 @@ etl-pipeline -v
 
 # Use a custom config file
 etl-pipeline -c data/config.example.yaml
+
+# Output as JSON Lines
+etl-pipeline --output-format json
+
+# Output as Parquet (requires pyarrow)
+pip install 'devin-etl-pipeline[parquet]'
+etl-pipeline --output-format parquet
 ```
 
 ### Dashboard
@@ -171,6 +178,7 @@ The pipeline can be configured via a YAML file (see `data/config.example.yaml`).
 | `date_format` | `%Y-%m-%d` | Primary date format to expect |
 | `dedup_columns` | `["id"]` | Columns used to identify duplicate rows |
 | `batch_size` | `1000` | Rows per batch (for future streaming support) |
+| `output_format` | `csv` | Output format: `csv`, `json`, or `parquet` |
 | `log_level` | `INFO` | Logging verbosity |
 
 ---
