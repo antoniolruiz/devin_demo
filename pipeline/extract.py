@@ -51,7 +51,6 @@ def read_multiple_csvs(filepaths, config=None):
             frames.append(df)
         except FileNotFoundError:
             logger.warning(f"Skipping missing file: {fp}")
-            # BUG: continues silently even if ALL files are missing
             continue
 
     if not frames:
