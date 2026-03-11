@@ -23,6 +23,9 @@ def read_csv(filepath, config=None):
     df = pd.read_csv(filepath)
     logger.info(f"Read {len(df)} rows from {filepath}")
 
+    if len(df) == 0:
+        logger.warning(f"No data rows found in {filepath}")
+
     return df
 
 
@@ -48,14 +51,21 @@ def read_multiple_csvs(filepaths, config=None):
             frames.append(df)
         except FileNotFoundError:
             logger.warning(f"Skipping missing file: {fp}")
-            # BUG: continues silently even if ALL files are missing
             continue
 
     if not frames:
-        # Returns empty DataFrame with no columns instead of raising
-        return pd.DataFrame()
+        raise ValueError(
+            "All input files are missing or could not be read"
+        )
 
-    return pd.concat(frames, ignore_index=True)
+    result = pd.concat(frames, ignore_index=True)
+
+    if len(result) == 0:
+        raise ValueError(
+            "All input files are empty — concatenation yielded 0 data rows"
+        )
+
+    return result
 
 
 # Dead code — this function is never called anywhere
@@ -83,5 +93,10 @@ def extract(config=None):
     filepath = config["input_path"]
     df = read_csv(filepath, config)
     validate_schema(df, config)
+
+    if df.shape[0] == 0:
+        raise ValueError(
+            f"Input file contains no data rows (0 rows loaded from {filepath})"
+        )
 
     return df
