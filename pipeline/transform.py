@@ -86,8 +86,7 @@ def add_computed_columns(df):
     # Add a fiscal quarter column
     df["quarter"] = df["date"].dt.quarter
 
-    # BUG: Comparing string category to integer — always False
-    df["is_high_value"] = df["amount"] > "1000"
+    df["is_high_value"] = df["amount"] > 1000
 
     return df
 
